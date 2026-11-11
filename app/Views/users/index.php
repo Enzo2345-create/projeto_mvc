@@ -1,39 +1,18 @@
-<div class="cabecalho-pagina">
-    <h1><?= e($title) ?></h1>
-    <div class="acoes">
-        <a class="btn btn-sec" href="<?= e(url('user')) ?>">Voltar</a>
-        <a class="btn" href="<?= e(url('user/create')) ?>">+ Novo usuário</a>
-    </div>
+<div class="secao-header">
+    <h1 class="titulo-bloco"><?= e($title) ?></h1>
+    <a href="<?= url('user/create') ?>" class="btn btn-prisma">Novo usuário</a>
 </div>
-
+<p class="subtitulo-bloco"><?= count($users) ?> cadastrado(s) no sistema</p>
 <?php if (!$users): ?>
-    <p>Nenhum usuário cadastrado.</p>
+    <p class="alert alert-prisma">Nenhum usuário cadastrado.</p>
 <?php else: ?>
-    <div class="tabela-container">
-    <table class="tabela">
-        <thead>
-            <tr>
-                <th>Nome completo</th>
-                <th>E-mail</th>
-                <th>CPF</th>
-                <th>Nascimento</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($users as $u): ?>
-                <tr>
-                    <td><?= e($u['name'] . ' ' . $u['last_name']) ?></td>
-                    <td><?= e($u['email']) ?></td>
-                    <td><?= e(format_cpf($u['cpf'])) ?></td>
-                    <td><?= e(format_date($u['birth_date'])) ?></td>
-                    <td class="acoes">
-                        <a class="btn btn-sec" href="<?= e(url('user/show/' . (int) $u['id'])) ?>">Ver</a>
-                        <a class="btn" href="<?= e(url('user/edit/' . (int) $u['id'])) ?>">Editar</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    </div>
+<ul class="lista list-group">
+<?php foreach ($users as $u): ?>
+    <li class="list-group-item d-flex flex-wrap align-items-center gap-2">
+        <a class="usuario-nome" href="<?= url('user/show/' . (int) $u['id']) ?>"><?= e($u['name']) ?></a>
+        (<?= e($u['email']) ?>)
+        <a href="<?= url('user/show/' . (int) $u['id']) ?>" class="btn btn-sm btn-outline-prisma ms-auto">Detalhes</a>
+    </li>
+<?php endforeach; ?>
+</ul>
 <?php endif; ?>
