@@ -15,7 +15,7 @@ spl_autoload_register(function (string $class) {
 
 require __DIR__ . '/../app/helpers.php';
 
-$url = explode('/', trim(($_GET['url'] ?? '') ?: 'user/index', '/'));
+$url = explode('/', trim(($_GET['url'] ?? '') ?: 'home/index', '/'));
 
 $controller = 'App\\Controllers\\' . ucfirst($url[0]) . 'Controller';
 $method = $url[1] ?? 'index';

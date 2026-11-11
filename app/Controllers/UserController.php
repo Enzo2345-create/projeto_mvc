@@ -4,34 +4,27 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Validators\UserValidator;
 
-class UserController
-{
-    public function index(): void
-    {
+class UserController {
+    public function index(): void {
         $this->render('users/index', [
             'title' => 'Usuários',
             'users' => User::all(),
         ]);
     }
+    public function show(string $id = ''): void {
+    $user = User::find((int) $id);
 
-    public function show(string $id = ''): void
-    {
-        $user = User::find((int) $id);
-
-        if (!$user) {
+    if (!$user) {
             http_response_code(404);
             exit('Usuário não encontrado');
         }
 
-        // A apostila orienta reaproveitar a tabela da listagem com apenas um usuário.
-        $this->render('users/index', [
+        $this->render('users/show', [
             'title' => 'Dados do usuário',
-            'users' => [$user],
+            'user' => $user,
         ]);
     }
-
-    public function create(): void
-    {
+    public function create(): void {
         $this->render('users/form', [
             'title' => 'Novo usuário',
             'errors' => [],
@@ -39,18 +32,20 @@ class UserController
             'csrf' => $this->csrfToken(),
         ]);
     }
-
-    public function store(): void
-    {
+    public function store(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             exit('Método não permitido');
         }
-
         $this->checkCsrf();
-        $input = $this->userInput();
-        $errors = $this->validateUser($input);
-
+        $input = [
+            'name' => trim($_POST['name'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+        ];
+        $errors = (new UserValidator())->validate($input);
+        if (!$errors && User::emailExists($input['email'])) {
+            $errors['email'] = 'Este e-mail já está cadastrado.';
+        }
         if ($errors) {
             http_response_code(422);
             $this->render('users/form', [
@@ -61,114 +56,22 @@ class UserController
             ]);
             return;
         }
-
-        User::create($input);
+        User::create($input['name'], $input['email']);
         header('Location: ' . url('user/index'));
         exit;
     }
-
-    public function edit(string $id = ''): void
-    {
-        $user = User::find((int) $id);
-
-        if (!$user) {
-            http_response_code(404);
-            exit('Usuário não encontrado');
-        }
-
-        $this->render('users/edit', [
-            'title' => 'Editar usuário',
-            'user' => $user,
-            'errors' => [],
-            'old' => $user,
-            'csrf' => $this->csrfToken(),
-        ]);
-    }
-
-    public function update(string $id = ''): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            exit('Método não permitido');
-        }
-
-        $this->checkCsrf();
-
-        $user = User::find((int) $id);
-        if (!$user) {
-            http_response_code(404);
-            exit('Usuário não encontrado');
-        }
-
-        $input = $this->userInput();
-        $errors = $this->validateUser($input, (int) $user['id']);
-
-        if ($errors) {
-            http_response_code(422);
-            $this->render('users/edit', [
-                'title' => 'Editar usuário',
-                'user' => $user,
-                'errors' => $errors,
-                'old' => $input,
-                'csrf' => $this->csrfToken(),
-            ]);
-            return;
-        }
-
-        User::update((int) $user['id'], $input);
-        header('Location: ' . url('user/index'));
-        exit;
-    }
-
-    private function userInput(): array
-    {
-        $name = $_POST['name'] ?? '';
-        $lastName = $_POST['last_name'] ?? '';
-        $email = $_POST['email'] ?? '';
-        $cpf = $_POST['cpf'] ?? '';
-        $birthDate = $_POST['birth_date'] ?? '';
-
-        return [
-            'name' => is_string($name) ? trim($name) : '',
-            'last_name' => is_string($lastName) ? trim($lastName) : '',
-            'email' => is_string($email) ? trim($email) : '',
-            'cpf' => is_string($cpf) ? preg_replace('/\D/', '', $cpf) : '',
-            'birth_date' => is_string($birthDate) ? trim($birthDate) : '',
-        ];
-    }
-
-    private function validateUser(array $input, ?int $ignoreId = null): array
-    {
-        $errors = (new UserValidator())->validate($input);
-
-        if (!isset($errors['email']) && User::emailExists($input['email'], $ignoreId)) {
-            $errors['email'] = 'Este e-mail já está cadastrado.';
-        }
-
-        if (!isset($errors['cpf']) && User::cpfExists($input['cpf'], $ignoreId)) {
-            $errors['cpf'] = 'Este CPF já está cadastrado.';
-        }
-
-        return $errors;
-    }
-
-    private function csrfToken(): string
-    {
+    private function csrfToken(): string {
         session_status() === PHP_SESSION_NONE && session_start();
         return $_SESSION['csrf'] ??= bin2hex(random_bytes(32));
     }
-
-    private function checkCsrf(): void
-    {
+    private function checkCsrf(): void {
         session_status() === PHP_SESSION_NONE && session_start();
         if (!hash_equals($_SESSION['csrf'] ?? '', $_POST['csrf'] ?? '')) {
             http_response_code(403);
             exit('Token inválido');
         }
     }
-
-    private function render(string $view, array $data = []): void
-    {
+    private function render(string $view, array $data = []): void {
         $base = __DIR__ . '/../Views/';
         $renderFile = static function (string $__file, array $__data): string {
             extract($__data, EXTR_SKIP);
@@ -176,7 +79,6 @@ class UserController
             require $__file;
             return ob_get_clean();
         };
-
         $content = $renderFile($base . $view . '.php', $data);
         $vars = $data + ['content' => $content];
         echo $renderFile($base . 'layouts/main.php', $vars);

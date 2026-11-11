@@ -1,15 +1,1 @@
-
-<h1 class="titulo-bloco"><?= e($title) ?></h1>
-
-<div class="user-details card card-body p-4 mb-3">
-    <div class="avatar-prisma mb-3" aria-hidden="true"><?= e(mb_strtoupper(mb_substr((string) $user['name'], 0, 1))) ?></div>
-    <p><strong>ID:</strong> <?= e($user['id']) ?></p>
-
-    <p><strong>Nome:</strong> <?= e($user['name']) ?></p>
-
-    <p><strong>E-mail:</strong> <?= e($user['email']) ?></p>
-</div>
-
-<p>
-    <a href="<?= e(url('user/index')) ?>" class="btn btn-outline-prisma">Voltar para a lista de usuários</a>
-</p>
+<section class="container py-5"><span class="kicker">Administração</span><h1 class="section-title"><?= e($title) ?></h1><div class="forum-card p-3 p-md-4" style="max-width: 680px"><p><strong>ID:</strong> <?= e((string) $user['id']) ?></p><p><strong>Nome:</strong> <?= e($user['name']) ?></p><p class="mb-0"><strong>E-mail:</strong> <?= e($user['email']) ?></p></div><p class="mt-4"><a href="<?= url('user/index') ?>">← Voltar para a lista de usuários</a></p></section>

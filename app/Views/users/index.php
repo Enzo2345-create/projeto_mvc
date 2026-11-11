@@ -1,18 +1,4 @@
-<div class="secao-header">
-    <h1 class="titulo-bloco"><?= e($title) ?></h1>
-    <a href="<?= url('user/create') ?>" class="btn btn-prisma">Novo usuário</a>
-</div>
-<p class="subtitulo-bloco"><?= count($users) ?> cadastrado(s) no sistema</p>
-<?php if (!$users): ?>
-    <p class="alert alert-prisma">Nenhum usuário cadastrado.</p>
-<?php else: ?>
-<ul class="lista list-group">
-<?php foreach ($users as $u): ?>
-    <li class="list-group-item d-flex flex-wrap align-items-center gap-2">
-        <a class="usuario-nome" href="<?= url('user/show/' . (int) $u['id']) ?>"><?= e($u['name']) ?></a>
-        (<?= e($u['email']) ?>)
-        <a href="<?= url('user/show/' . (int) $u['id']) ?>" class="btn btn-sm btn-outline-prisma ms-auto">Detalhes</a>
-    </li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
+<section class="container py-5">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4"><div><span class="kicker">Administração</span><h1 class="section-title mb-0"><?= e($title) ?></h1></div><a class="btn btn-raizes" href="<?= url('user/create') ?>"><i class="bi bi-person-plus me-2"></i>Novo usuário</a></div>
+<div class="forum-card p-3 p-md-4">
+<?php if (!$users): ?><p class="mb-0 text-soft">Nenhum usuário cadastrado.</p><?php else: ?><div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Nome</th><th>E-mail</th><th>Ação</th></tr></thead><tbody><?php foreach ($users as $u): ?><tr><td><?= e($u['name']) ?></td><td><?= e($u['email']) ?></td><td><a class="btn btn-sm btn-raizes-outline" href="<?= url('user/show/' . (int) $u['id']) ?>">Visualizar</a></td></tr><?php endforeach; ?></tbody></table></div><?php endif; ?></div><p class="mt-4"><a href="<?= url('home/index') ?>">← Voltar ao Raízes</a></p></section>

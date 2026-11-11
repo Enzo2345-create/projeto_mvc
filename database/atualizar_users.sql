@@ -1,4 +1,4 @@
-USE meu_mvc;
+USE nexos;
 
 -- Execute este arquivo apenas se a tabela users já existe com os dados da Parte 1.
 -- Primeiro, adiciona as colunas aceitando NULL para preservar os registros existentes.
