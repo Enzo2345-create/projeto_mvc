@@ -40,11 +40,16 @@ class UserController {
         $this->checkCsrf();
         $input = [
             'name' => trim($_POST['name'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
+            'email' => strtolower(trim($_POST['email'] ?? '')),
+            'cpf' => preg_replace('/\D/', '', $_POST['cpf'] ?? ''),
+            'birth_date' => trim($_POST['birth_date'] ?? ''),
         ];
         $errors = (new UserValidator())->validate($input);
         if (!$errors && User::emailExists($input['email'])) {
             $errors['email'] = 'Este e-mail já está cadastrado.';
+        }
+        if (!$errors && User::cpfExists($input['cpf'])) {
+            $errors['cpf'] = 'Este CPF já está cadastrado.';
         }
         if ($errors) {
             http_response_code(422);
@@ -56,7 +61,7 @@ class UserController {
             ]);
             return;
         }
-        User::create($input['name'], $input['email']);
+        User::create($input);
         header('Location: ' . url('user/index'));
         exit;
     }

@@ -16,6 +16,17 @@ class UserValidator {
             !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Informe um e-mail válido.';
         }
+        $cpf = $input['cpf'] ?? '';
+        if (!is_string($cpf) || strlen($cpf) !== 11 || !ctype_digit($cpf)) {
+            $errors['cpf'] = 'Informe um CPF com 11 números.';
+        }
+        $birthDate = $input['birth_date'] ?? '';
+        $date = is_string($birthDate)
+            ? \DateTime::createFromFormat('!Y-m-d', $birthDate)
+            : false;
+        if (!$date || $date->format('Y-m-d') !== $birthDate || $birthDate > date('Y-m-d')) {
+            $errors['birth_date'] = 'Informe uma data de nascimento válida.';
+        }
         return $errors;
     }
 }

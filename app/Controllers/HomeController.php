@@ -25,4 +25,15 @@ class HomeController
         $vars = $data + ['content' => $content];
         echo $renderFile($base . 'layouts/main.php', $vars);
     }
+    private function csrfToken(): string {
+        session_status() === PHP_SESSION_NONE && session_start();
+        return $_SESSION['csrf'] ??= bin2hex(random_bytes(32));
+    }
+    private function checkCsrf(): void {
+        session_status() === PHP_SESSION_NONE && session_start();
+        if (!hash_equals($_SESSION['csrf'] ?? '', $_POST['csrf'] ?? '')) {
+            http_response_code(403);
+            exit('Token inválido');
+        }
+    }
 }
