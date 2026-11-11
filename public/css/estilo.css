@@ -1,3 +1,8 @@
 /* Ajustes complementares do MVC. A identidade visual principal está em style.css. */
 html { scroll-behavior: smooth; }
 .text-danger { color: #b00020 !important; }
+.account-menu { border: 0; background: transparent; color: inherit; font-weight: 600; }
+.account-menu:hover, .account-menu:focus { color: var(--maroon, #6f1d1b); }
+.account-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #d9c7b1; }
+.account-avatar-placeholder { display: inline-flex; align-items: center; justify-content: center; background: #f0e6d8; color: #6f1d1b; font-size: 1.25rem; }
+.account-dropdown { min-width: 270px; }

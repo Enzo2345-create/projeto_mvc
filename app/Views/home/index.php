@@ -27,8 +27,36 @@
           <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
           <?php $csrfToken = $_SESSION['csrf'] ??= bin2hex(random_bytes(32)); ?>
           <?php if (!empty($_SESSION['user'])): ?>
-            <span class="small">Olá, <?= e($_SESSION['user']['name']) ?></span>
-            <form method="post" action="<?= url('auth/logout') ?>"><input type="hidden" name="csrf" value="<?= e($csrfToken) ?>"><button class="btn btn-raizes-outline btn-sm" type="submit">Sair</button></form>
+            <?php $firstName = preg_split('/\s+/', trim($_SESSION['user']['name']))[0] ?? ''; ?>
+            <div class="dropdown">
+              <button class="btn account-menu dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <?php if (!empty($_SESSION['user']['photo'])): ?>
+                  <img class="account-avatar" src="<?= asset($_SESSION['user']['photo']) ?>" alt="Foto de <?= e($firstName) ?>">
+                <?php else: ?>
+                  <span class="account-avatar account-avatar-placeholder" aria-hidden="true"><i class="bi bi-person-fill"></i></span>
+                <?php endif; ?>
+                <span><?= e($firstName) ?></span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end account-dropdown p-3">
+                <div class="fw-semibold mb-2">Sua conta</div>
+                <?php if (!empty($_SESSION['photo_error'])): ?>
+                  <div class="alert alert-danger py-2 small" role="alert"><?= e($_SESSION['photo_error']) ?></div>
+                  <?php unset($_SESSION['photo_error']); ?>
+                <?php endif; ?>
+                <form method="post" action="<?= url('auth/photo') ?>" enctype="multipart/form-data">
+                  <input type="hidden" name="csrf" value="<?= e($csrfToken) ?>">
+                  <label class="form-label small mb-1" for="profilePhoto">Foto de perfil</label>
+                  <input class="form-control form-control-sm mb-2" type="file" id="profilePhoto" name="photo" accept="image/jpeg,image/png,image/webp" required>
+                  <div class="form-text mb-2">JPG, PNG ou WEBP · até 3 MB</div>
+                  <button class="btn btn-raizes btn-sm w-100" type="submit">Salvar foto</button>
+                </form>
+                <hr>
+                <form method="post" action="<?= url('auth/logout') ?>">
+                  <input type="hidden" name="csrf" value="<?= e($csrfToken) ?>">
+                  <button class="btn btn-raizes-outline btn-sm w-100" type="submit"><i class="bi bi-box-arrow-right me-1"></i>Deslogar</button>
+                </form>
+              </div>
+            </div>
           <?php else: ?>
             <button class="btn btn-raizes-outline btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalEntrar"><i class="bi bi-box-arrow-in-right me-1"></i>Entrar / Login</button>
           <?php endif; ?>

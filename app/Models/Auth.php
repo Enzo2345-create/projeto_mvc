@@ -47,7 +47,7 @@ class Auth
     public static function findByEmail(string $email): ?array
     {
         $stmt = Database::connect()->prepare(
-            'SELECT p.id_pessoa, p.nome_pessoa, p.email, p.senha,
+            'SELECT p.id_pessoa, p.nome_pessoa, p.email, p.senha, u.foto_de_perfil,
                     CASE WHEN a.id_pessoa IS NOT NULL THEN "administrador" ELSE "usuario" END AS role
              FROM pessoa p
              LEFT JOIN usuario u ON u.id_pessoa = p.id_pessoa
@@ -57,5 +57,13 @@ class Auth
         );
         $stmt->execute([$email]);
         return $stmt->fetch() ?: null;
+    }
+
+    public static function updateProfilePhoto(int $userId, string $photoPath): void
+    {
+        $stmt = Database::connect()->prepare(
+            'UPDATE usuario SET foto_de_perfil = ? WHERE id_pessoa = ?'
+        );
+        $stmt->execute([$photoPath, $userId]);
     }
 }
