@@ -24,7 +24,14 @@
         </ul>
         <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
           <span class="points-pill" title="Seus pontos"><i class="bi bi-star-fill"></i> <span class="js-meus-pontos">0</span> pts</span>
-          <button class="btn btn-raizes-outline btn-sm" data-bs-toggle="modal" data-bs-target="#modalEntrar"><i class="bi bi-box-arrow-in-right me-1"></i>Entrar</button>
+          <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
+          <?php $csrfToken = $_SESSION['csrf'] ??= bin2hex(random_bytes(32)); ?>
+          <?php if (!empty($_SESSION['user'])): ?>
+            <span class="small">Olá, <?= e($_SESSION['user']['name']) ?></span>
+            <form method="post" action="<?= url('auth/logout') ?>"><input type="hidden" name="csrf" value="<?= e($csrfToken) ?>"><button class="btn btn-raizes-outline btn-sm" type="submit">Sair</button></form>
+          <?php else: ?>
+            <button class="btn btn-raizes-outline btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalEntrar"><i class="bi bi-box-arrow-in-right me-1"></i>Entrar / Login</button>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -557,7 +564,8 @@
   <!-- Entrar -->
   <div class="modal fade" id="modalEntrar" tabindex="-1" aria-labelledby="modalEntrarTitulo" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <form class="modal-content" id="formEntrar">
+      <form class="modal-content" id="formEntrar" method="post" action="<?= url('auth/login') ?>">
+        <input type="hidden" name="csrf" value="<?= e($csrfToken) ?>">
         <div class="modal-header border-0">
           <h2 class="modal-title h3" id="modalEntrarTitulo">Entrar no Raízes</h2>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -565,11 +573,11 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="entrarEmail" class="form-label fw-semibold">E-mail</label>
-            <input type="email" class="form-control" id="entrarEmail" placeholder="voce@escola.edu.br" required>
+            <input type="email" class="form-control" id="entrarEmail" name="email" autocomplete="email" placeholder="voce@escola.edu.br" required>
           </div>
           <div class="mb-3">
             <label for="entrarSenha" class="form-label fw-semibold">Senha</label>
-            <input type="password" class="form-control" id="entrarSenha" required>
+            <input type="password" class="form-control" id="entrarSenha" name="password" autocomplete="current-password" required>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="entrarProfessor">
@@ -578,6 +586,7 @@
         </div>
         <div class="modal-footer border-0">
           <button type="submit" class="btn btn-raizes w-100">Entrar</button>
+          <p class="w-100 text-center mb-0">Ainda não tem conta? <a href="<?= url('auth/register') ?>">Cadastre-se</a>.</p>
         </div>
       </form>
     </div>

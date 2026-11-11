@@ -1,8 +1,8 @@
 <?php
 return [
     'host' => 'localhost',
-    'name' => '',
-    'user' => '',
+    'name' => 'nexos',
+    'user' => 'root',
     'pass' => '',
     'charset' => 'utf8mb4',
 ];

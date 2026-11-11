@@ -261,12 +261,6 @@
   });
 
   /* ---------- Entrar (demonstração) ---------- */
-  $("#formEntrar").addEventListener("submit", (e) => {
-    e.preventDefault();
-    bootstrap.Modal.getInstance($("#modalEntrar")).hide();
-    aviso("Login de demonstração. Conecte ao back-end para ativar contas reais.");
-  });
-
   /* ---------- Navbar ao rolar ---------- */
   const navbar = $("#navbar");
   const aoRolar = () => navbar.classList.toggle("scrolled", window.scrollY > 10);
