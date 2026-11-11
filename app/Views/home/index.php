@@ -2,14 +2,14 @@
   <div class="topbar">
     <div class="container d-flex justify-content-between gap-3">
       <span>Diversidade étnico-racial em debate</span>
-      <span class="d-none d-md-inline"><a href="#artigos">Artigos</a> · <a href="#noticias">Notícias</a> · <a href="#comunidade">Comunidade</a> · <a href="#desafio">Desafio</a></span>
+      <span class="d-none d-md-inline"><a href="#artigos">Artigos</a> · <a href="#noticias">Notícias</a> · <a href="#comunidade">Comunidade</a> · <a href="#desafio">Quizes</a></span>
     </div>
   </div>
 
   <!-- ===================== MENU ===================== -->
   <nav class="navbar navbar-expand-lg navbar-raizes sticky-top py-3" id="navbar">
     <div class="container">
-      <a class="brand-raizes" href="#inicio" aria-label="Raízes, voltar ao início">RAÍZES<span class="dot" aria-hidden="true"></span></a>
+      <a class="brand-raizes" href="#inicio" aria-label="Raízes, voltar ao início">NEXOS<span class="dot" aria-hidden="true"></span></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
         <span class="navbar-toggler-icon"></span>
       </button>
